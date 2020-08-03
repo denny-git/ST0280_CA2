@@ -71,7 +71,7 @@ namespace CSC_CA2.Controllers
         }
 
 
-        private RecombeeClient recombeeClient = new RecombeeClient("thelifetimetalents-prod", "3CpbpUe4JvX3VOcrZqqaLEQ6jYCcIul8EQphej4VH4Qo0nw48MONgsnwpDcymxs3");
+        private RecombeeClient recombeeClient = new RecombeeClient("thelifetimetalents-prod", "");
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
 
         // GET api/Account/UserInfo
@@ -364,7 +364,7 @@ namespace CSC_CA2.Controllers
             }
 
             HttpClient client = new HttpClient();
-            var res = client.GetAsync($"https://www.google.com/recaptcha/api/siteverify?secret=6LdW77gZAAAAAL_KIE45UdWlXkVJRIoaR1WBEQ7A&response=" + model.Token).Result;
+            var res = client.GetAsync($"https://www.google.com/recaptcha/api/siteverify?secret=&response=" + model.Token).Result;
 
             if ((int)res.StatusCode != 200)
             {
@@ -412,7 +412,7 @@ namespace CSC_CA2.Controllers
                     return Request.CreateResponse(HttpStatusCode.BadRequest, e.Message);
                 }
 
-                StripeConfiguration.ApiKey = "sk_test_51GtOtACvBO8inb37b7UXHnJD8T8bzca1dp6U6mxlHqhPM0z2XNlTMMAM5jkmBgU5rpdqQMBpGyTSMGl2RHZek7qV00ctt3Ayxc";
+                StripeConfiguration.ApiKey = "";
 
                 var options = new CustomerCreateOptions
                 {
@@ -697,7 +697,7 @@ namespace CSC_CA2.Controllers
                 Table userPlansTable = Table.LoadTable(client, "users_plans");
                 var userPlan = new Document();
 
-                StripeConfiguration.ApiKey = "sk_test_51GtOtACvBO8inb37b7UXHnJD8T8bzca1dp6U6mxlHqhPM0z2XNlTMMAM5jkmBgU5rpdqQMBpGyTSMGl2RHZek7qV00ctt3Ayxc";
+                StripeConfiguration.ApiKey = "";
                 if (user.StripeId != null)
                 {
                     try

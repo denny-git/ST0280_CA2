@@ -284,7 +284,6 @@
     <Compile Include="Controllers\SubscriptionsController.cs" />
     <Compile Include="Controllers\TalentsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\WebhookController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

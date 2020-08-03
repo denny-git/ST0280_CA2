@@ -22,7 +22,7 @@ namespace CSC_CA2.Controllers
     public class SubscriptionsController : ApiController
     {
         ApplicationDbContext context = new ApplicationDbContext();
-        private readonly string apiKey = "sk_test_51GtOtACvBO8inb37b7UXHnJD8T8bzca1dp6U6mxlHqhPM0z2XNlTMMAM5jkmBgU5rpdqQMBpGyTSMGl2RHZek7qV00ctt3Ayxc";
+        private readonly string apiKey = "";
 
         private ApplicationUserManager _userManager;
         public SubscriptionsController()
@@ -86,7 +86,7 @@ namespace CSC_CA2.Controllers
         {
 
             //create subscription, add user to paiduser role, modify dynamodb
-            StripeConfiguration.ApiKey = "sk_test_51GtOtACvBO8inb37b7UXHnJD8T8bzca1dp6U6mxlHqhPM0z2XNlTMMAM5jkmBgU5rpdqQMBpGyTSMGl2RHZek7qV00ctt3Ayxc";
+            StripeConfiguration.ApiKey = "";
 
             if (User.IsInRole("PaidUser"))
             {

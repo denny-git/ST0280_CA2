@@ -3250,11 +3250,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\CSC\\CA2\\code\\GetAllTalents\\GetAllTalents\\GetAllTalents.csproj",
+      "projectUniqueName": "D:\\CSC\\CA2\\code\\source\\ST0280_CA2\\GetAllTalents\\GetAllTalents\\GetAllTalents.csproj",
       "projectName": "GetAllTalents",
-      "projectPath": "D:\\CSC\\CA2\\code\\GetAllTalents\\GetAllTalents\\GetAllTalents.csproj",
+      "projectPath": "D:\\CSC\\CA2\\code\\source\\ST0280_CA2\\GetAllTalents\\GetAllTalents\\GetAllTalents.csproj",
       "packagesPath": "C:\\Users\\Denny\\.nuget\\packages\\",
-      "outputPath": "D:\\CSC\\CA2\\code\\GetAllTalents\\GetAllTalents\\obj\\",
+      "outputPath": "D:\\CSC\\CA2\\code\\source\\ST0280_CA2\\GetAllTalents\\GetAllTalents\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

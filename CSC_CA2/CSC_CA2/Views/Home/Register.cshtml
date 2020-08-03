@@ -16,7 +16,7 @@
 
             <div class="loginForm validate-form flex-sb flex-w">
                 <h1>Register</h1>
-                <p>Create an account to access note history.</p>
+                <p>Create an account to view/create comments and get personalised recommendations.</p>
                 <hr>
 
 
@@ -36,69 +36,13 @@
                 <label for="psw"><b>Confirm Password</b></label>
                 <input type="password" placeholder="Re-enter Password" name="psw" id="txtConfirmPassword" required>
 
-
-                <!-- START CAPTCHA -->
-                <!-- <br>
-                 <div class="capbox">
-
-                     <div id="CaptchaDiv"></div>
-
-                     <div class="capbox-inner">
-                         Type the number:
-                         <br>
-                         <input type="hidden" id="txtCaptcha">
-                         <input type="text" name="CaptchaInput" id="CaptchaInput" size="15" required>
-                         <br>
-
-                     </div>
-                 </div>
-                 <br>
-                 <br>
-                END CAPTCHA -->
-
             </div>
-            <input type="submit" class="registerbtn g-recaptcha" id="btnRegister" data-sitekey="6LdW77gZAAAAAKk0TbjF9QsyrFJ1mVr4vC0BDUBo" data-callback="onSubmit" data-action="submit" value="Register">
+            <input type="submit" class="registerbtn g-recaptcha" id="btnRegister" data-sitekey="" data-callback="onSubmit" data-action="submit" value="Register">
             <div class="container signin">
                 <p>Already have an account? <a href="/Home/Login">Sign in</a>.</p>
             </div>
 
-            <!-- <table class="table table-border">
-                <thead>
-                    <tr class="success">
-                        <th col-span="2">
-                            New User Registration
-                            <a class="btn btn-success pull-right" href="Login.html">
-                                Login
-                            </a>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Email</td>
-                        <td>
-                            <input type="text" id="txtEmail" placeholder="Email" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Password</td>
-                        <td>
-                            <input type="password" id="txtPassword" placeholder="Password" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Confirm Password</td>
-                        <td>
-                            <input type="password" id="txtConfirmPassword" placeholder="Confirm Password" />
-                        </td>
-                    </tr>
-                    <tr class="success">
-                        <td colspan="2">
-                            <input id="btnRegister" class="btn btn-success" type="button" value="Register" />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>-->
+           
             <div class="modal fade" tabindex="1" id="successModal"
                  data-keyboard="false" data-backdrop="static">
                 <div class="modal-dialog modal-sm">
@@ -169,9 +113,6 @@
                             $('#divError').show('fade');
                         }
 
-                    } else if (jqXHR.status === 403) {
-                        $('#divErrorText').append('Authorisation denied, you may need to sign in again');
-                        $('#divError').show('fade');
                     }
                     else if (jqXHR.status === 500) {
                         $('#divErrorText').append('An internal server error occurred');

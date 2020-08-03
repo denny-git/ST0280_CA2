@@ -25,7 +25,7 @@ namespace CSC_CA2.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> CreateSession()
         {
-            StripeConfiguration.ApiKey = "sk_test_51GtOtACvBO8inb37b7UXHnJD8T8bzca1dp6U6mxlHqhPM0z2XNlTMMAM5jkmBgU5rpdqQMBpGyTSMGl2RHZek7qV00ctt3Ayxc";
+            StripeConfiguration.ApiKey = "";
             string userId = User.Identity.GetUserId();
             var user = await context.Users.FirstOrDefaultAsync(x => x.Id.Equals(userId));
 

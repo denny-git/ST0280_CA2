@@ -36,7 +36,7 @@ namespace GetTalent
                 };
             }
             string id = request.PathParameters["talentId"];
-            string ConnectionString = "Data Source = csc-ca2.c9oqyg5fu7ja.us-east-1.rds.amazonaws.com,1433; Initial Catalog = Users_Talents; user Id = admin; password = CSC_CA2_password";
+            string ConnectionString = "Data Source = csc-ca2.c9oqyg5fu7ja.us-east-1.rds.amazonaws.com,1433; Initial Catalog = Users_Talents; user Id = admin; password = ";
 
             object response = new object();
             using (var Conn = new SqlConnection(ConnectionString))

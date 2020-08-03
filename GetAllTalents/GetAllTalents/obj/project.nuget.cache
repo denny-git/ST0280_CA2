@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "wykIGEsRHzzdAd/ausRyYLgRp8UDQAOyckBCluOuVieMeTEdom6VToSYdMqTRaaqhh1pGKc7ryKphiNeaIAVxw==",
+  "dgSpecHash": "jDW7+NRwTfW6UgqKW+V432UqYOBbDvNtTZ3Ls8LkKrhHtXZf+8yvywbWQEDZ79GEqDAU1NwW3nAU9RtNhsEdsQ==",
   "success": true,
-  "projectFilePath": "D:\\CSC\\CA2\\code\\GetAllTalents\\GetAllTalents\\GetAllTalents.csproj",
+  "projectFilePath": "D:\\CSC\\CA2\\code\\source\\ST0280_CA2\\GetAllTalents\\GetAllTalents\\GetAllTalents.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Denny\\.nuget\\packages\\amazon.lambda.apigatewayevents\\2.1.0\\amazon.lambda.apigatewayevents.2.1.0.nupkg.sha512",
     "C:\\Users\\Denny\\.nuget\\packages\\amazon.lambda.core\\1.1.0\\amazon.lambda.core.1.1.0.nupkg.sha512",

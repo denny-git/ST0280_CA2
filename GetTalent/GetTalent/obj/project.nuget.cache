@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "7lHEe2gCdEweU6wSKTanAd28Ex64RjBJ8OVVL4T3HxY44RJ+lNGmM8yh6cKJd2Px1JzdW7iroPkcDjynkUQP1g==",
+  "dgSpecHash": "Uk3CeVK9NRWymWgdwOIeKlLSCJgf2jIa5NnN6S/W5jAEdQ1tjscjC+xTYNNGAH7++EXrbdr8/2rdLXH5kBdoEw==",
   "success": true,
-  "projectFilePath": "D:\\CSC\\CA2\\code\\GetTalent\\GetTalent\\GetTalent.csproj",
+  "projectFilePath": "D:\\CSC\\CA2\\code\\source\\ST0280_CA2\\GetTalent\\GetTalent\\GetTalent.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Denny\\.nuget\\packages\\amazon.lambda.apigatewayevents\\2.1.0\\amazon.lambda.apigatewayevents.2.1.0.nupkg.sha512",
     "C:\\Users\\Denny\\.nuget\\packages\\amazon.lambda.core\\1.1.0\\amazon.lambda.core.1.1.0.nupkg.sha512",

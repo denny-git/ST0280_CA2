@@ -57,7 +57,7 @@ namespace CSC_CA2.Controllers
                 _userManager = value;
             }
         }
-        private RecombeeClient recombeeClient = new RecombeeClient("thelifetimetalents-prod", "3CpbpUe4JvX3VOcrZqqaLEQ6jYCcIul8EQphej4VH4Qo0nw48MONgsnwpDcymxs3");
+        private RecombeeClient recombeeClient = new RecombeeClient("thelifetimetalents-prod", "");
 
         private static readonly RegionEndpoint bucketRegion = RegionEndpoint.USEast1;
         private static readonly string bucketName = "csc-2020-ca2";
@@ -131,7 +131,7 @@ namespace CSC_CA2.Controllers
                     {
                         try
                         {
-                            var client = new ClarifaiClient("35eb832889864fb0825e9b1be6a2d11e");
+                            var client = new ClarifaiClient("");
                             var clarifaiTagsResult = await client.PublicModels.NsfwModel.Predict(new ClarifaiFileImage(fileBytes)).ExecuteAsync();
 
                             List<Concept> probabilities = clarifaiTagsResult.Get().Data;
