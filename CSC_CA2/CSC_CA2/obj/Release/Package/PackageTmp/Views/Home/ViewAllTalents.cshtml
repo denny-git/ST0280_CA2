@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewBag.Title = "View All Talents";
+}
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+
+
+<script>
+    $(document).ready(function () {
+        var tableBody = $('#table-body');
+        var table = $('#talents-table');
+
+        $.ajax({
+            url: 'https://n1szzaxsvf.execute-api.us-east-1.amazonaws.com/prod/getalltalents',
+            crossDomain: true,
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                if (data.totalRecords === 0) {
+                    $('#loader').hide();
+                    table.html('No recordings found.');
+                    table.show();
+                } else {
+                    $('#loader').hide();
+                    for (var i = 0; i < data.length; i++) {
+
+                        var record = data[i];
+                        var tableRow = '<tr>';
+                        tableRow += `<td><img src="${record.imageUrl}"/></td>`;
+                        tableRow += `<td><a href="/Home/Talent/${record.id}">${record.name}</a></td>`;
+
+                        tableRow += '<tr />'
+                        tableBody.append(tableRow);
+                    }
+                    $("tr").each(function () {
+                        if (!$(this).text().trim()) {
+                            this.remove();
+                        }
+                    });
+                    table.DataTable({ 'info': false });
+                }
+            },
+            error: function (data) {
+                var n = noty({
+                    text: data.message, layout: 'center', type: 'error', timeout: 1750
+                })
+                n.show();
+                $('#loader').hide();
+            }
+        });
+    })
+
+</script>
+<style>
+</style>
+<h2>View all talents</h2>
+<table class="table table-hover" id="talents-table">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody id="table-body">
+    </tbody>
+</table>
+

@@ -1,0 +1,290 @@
+﻿@{
+    ViewBag.Title = "Register";
+}
+@Scripts.Render("https://www.google.com/recaptcha/api.js")
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link href="/Content/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="col-md-10 col-md-offset-1">
+        <div class="container-login100">
+
+            <div class="loginForm validate-form flex-sb flex-w">
+                <h1>Register</h1>
+                <p>Create an account to access note history.</p>
+                <hr>
+
+
+
+                <label for="email"><b>Email</b></label>
+                <input type="email" placeholder="Enter Email" name="email" id="txtEmail" required>
+                <br />
+                <label for="fName"><b>First Name</b></label>
+                <input type="text" placeholder="Enter First Name" name="fName" id="txtFName" required>
+                <br />
+                <label for="lName"><b>Last Name</b></label>
+                <input type="text" placeholder="Enter Last Name" name="lName" id="txtLName" required>
+                <br />
+                <label for="psw"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="psw" id="txtPassword" required>
+                <br />
+                <label for="psw"><b>Confirm Password</b></label>
+                <input type="password" placeholder="Re-enter Password" name="psw" id="txtConfirmPassword" required>
+
+
+                <!-- START CAPTCHA -->
+                <!-- <br>
+                 <div class="capbox">
+
+                     <div id="CaptchaDiv"></div>
+
+                     <div class="capbox-inner">
+                         Type the number:
+                         <br>
+                         <input type="hidden" id="txtCaptcha">
+                         <input type="text" name="CaptchaInput" id="CaptchaInput" size="15" required>
+                         <br>
+
+                     </div>
+                 </div>
+                 <br>
+                 <br>
+                END CAPTCHA -->
+
+            </div>
+            <input type="submit" class="registerbtn g-recaptcha" id="btnRegister" data-sitekey="6LdW77gZAAAAAKk0TbjF9QsyrFJ1mVr4vC0BDUBo" data-callback="onSubmit" data-action="submit" value="Register">
+            <div class="container signin">
+                <p>Already have an account? <a href="/Home/Login">Sign in</a>.</p>
+            </div>
+
+            <!-- <table class="table table-border">
+                <thead>
+                    <tr class="success">
+                        <th col-span="2">
+                            New User Registration
+                            <a class="btn btn-success pull-right" href="Login.html">
+                                Login
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Email</td>
+                        <td>
+                            <input type="text" id="txtEmail" placeholder="Email" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Password</td>
+                        <td>
+                            <input type="password" id="txtPassword" placeholder="Password" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Confirm Password</td>
+                        <td>
+                            <input type="password" id="txtConfirmPassword" placeholder="Confirm Password" />
+                        </td>
+                    </tr>
+                    <tr class="success">
+                        <td colspan="2">
+                            <input id="btnRegister" class="btn btn-success" type="button" value="Register" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>-->
+            <div class="modal fade" tabindex="1" id="successModal"
+                 data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="model-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <h2>Registration Successful</h2>
+                            <p>A confirmation email has been sent to the address you provided.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" data-dismiss="modal" class="btn btn-success">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="divError" class="alert alert-danger collapse">
+                <a id="linkClose" class="close" href="#">&times;</a>
+                <div id="divErrorText"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#linkClose').click(function () {
+                $('#divError').hide('fade');
+            });
+            
+        });
+        function onSubmit(token) {
+            $.ajax({
+                url: '/api/account/register',
+                method: 'POST',
+                data: {
+                    email: $('#txtEmail').val(),
+                    firstName: $('#txtFName').val(),
+                    lastName: $('#txtLName').val(),
+                    password: $('#txtPassword').val(),
+                    confirmPassword: $('#txtConfirmPassword').val(),
+                    token: token
+                },
+                success: function () {
+                    $('#divError').hide('fade');
+                    $('#successModal').modal('show');
+                },
+                error: function (jqXHR) {
+                    $('#divErrorText').html('');
+
+                    if (jqXHR.status === 400) {
+                        try {
+                            var respObj = JSON.parse(jqXHR.responseJSON);
+                            var message = "The following error(s) occurred while attempting to register:<br />"
+                            for (var i = 0; i < respObj.length; i++) {
+                                if (respObj[i].length > 0) {
+                                    message += respObj[i][0].ErrorMessage + '<br />';
+                                }
+                            }
+                            $('#divErrorText').append(message);
+
+                            $('#divError').show('fade');
+                        } catch {
+                            var response = JSON.parse(jqXHR.responseText);
+
+                            $('#divErrorText').append(response.message);
+
+                            $('#divError').show('fade');
+                        }
+
+                    } else if (jqXHR.status === 403) {
+                        $('#divErrorText').append('Authorisation denied, you may need to sign in again');
+                        $('#divError').show('fade');
+                    }
+                    else if (jqXHR.status === 500) {
+                        $('#divErrorText').append('An internal server error occurred');
+                        $('#divError').show('fade');
+                    } else {
+                        $('#divErrorText').append('An error occurred');
+                        $('#divError').show('fade');
+                    }
+                }
+            });
+            
+        }
+    </script>
+</body>
+</html>
+
+<style>
+    /* COMPACT CAPTCHA */
+
+    .capbox {
+        background-color: #BBBBBB;
+        background-image: linear-gradient(#BBBBBB, #9E9E9E);
+        border: rgb(5, 81, 125) 0px solid;
+        border-width: 2px 2px 2px 20px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        display: inline-block;
+        padding: 5px 8px 5px 8px;
+        border-radius: 4px 4px 4px 4px;
+        width: 50%;
+    }
+
+    .capbox-inner {
+        font: bold 12px arial, sans-serif;
+        color: #000000;
+        background-color: #E3E3E3;
+        margin: 0px auto 0px auto;
+        padding: 3px 10px 5px 10px;
+        border-radius: 4px;
+        display: inline-block;
+        vertical-align: middle;
+        width: 500px;
+        float: left;
+    }
+
+    #CaptchaDiv {
+        color: #000000;
+        font: normal 25px Impact, Charcoal, arial, sans-serif;
+        font-style: italic;
+        text-align: center;
+        vertical-align: middle;
+        user-select: none;
+        display: inline-block;
+        padding: 3px 14px 3px 8px;
+        margin-right: 4px;
+        border-radius: 4px;
+    }
+
+    #CaptchaInput {
+        border: rgb(23, 184, 196) 2px solid;
+        margin: 3px 0px 1px 0px;
+        width: 450px;
+    }
+
+
+    /* Full-width input fields */
+    input[type=text], input[type=email] {
+        width: 100%;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+    }
+
+    input[type=password] {
+        width: 100%;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+    }
+
+        input[type=text]:focus, input[type=password]:focus {
+            background-color: #ddd;
+            outline: none;
+        }
+
+    /* Overwrite default styles of hr */
+    hr {
+        border: 1px solid #f1f1f1;
+        margin-bottom: 25px;
+    }
+
+    /* Set a style for the submit/register button */
+    .registerbtn {
+        background-color: #5283FF;
+        color: white;
+        padding: 16px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        opacity: 0.9;
+    }
+
+        .registerbtn:hover {
+            opacity: 1;
+        }
+
+    .container {
+        padding-top: 1.25em;
+    }
+</style>

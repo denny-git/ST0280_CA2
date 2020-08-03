@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Redirecting to Stripe";
+}
+@section scripts {
+    <script>
+    function getPortalSession() {
+        $.ajax({
+            url: '/api/CustomerPortalRedirect/CreateSession',
+            type: 'post',
+            success: function (data) {
+                $('#status').hide();
+                $('#redirectStatement').show();
+                setTimeout(function () {
+                    window.location.replace(data.url);
+                }, 3000);
+            },
+            error: function (result) {
+                $('#status').html('<img src="/ajax-loader.gif" /> Failed to create customer portal session, retrying...');
+                setTimeout(getPortalSession, 3000);
+            }
+        });
+    }
+    $('document').ready(function () {
+        $('#status').html('<img src="/ajax-loader.gif" /> Creating customer portal session...');
+        getPortalSession();
+    });
+
+
+    </script>
+}
+
+<style>
+    #redirectStatement {
+        display: none
+    }
+</style>
+<h1>Manage billing and subscriptions</h1>
+<div id="status"></div>
+<p id="redirectStatement">You will be redirected to the Stripe self-serve customer portal shortly.</p>

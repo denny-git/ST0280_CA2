@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewBag.Title = "Email Confirmed";
+}
+<script>
+    function redirect() {
+        window.location.href = "/Home/Login";
+    }
+    $(document).ready(function () {
+        setTimeout(redirect, 3000);
+    });
+</script>
+
+<h2>Email successfully confirmed</h2>
+<p>You're good to go. You will be redirected to the login page shortly. If that doesn't happen, <a href="/Home/Login">click here</a> instead.</p>
+

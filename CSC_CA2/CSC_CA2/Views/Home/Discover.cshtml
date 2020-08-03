@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewBag.Title = "Discover";
+}
+<script src="https://cdn.jsdelivr.net/gh/recombee/js-api-client@3.0.0/dist/recombee-api-client.min.js"></script>
+<script>
+    var client = new recombee.ApiClient('thelifetimetalents-prod', 'z1efN6EKoTBYWMHjoXFXG91HP4OUImatubWjt4xubhG0ZhfSCvazxkgGLUoIjVhb');
+    $(document).ready(function () {        
+        $.ajax({
+            url: `/api/Account/AccountId`,
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                if (typeof data.id !== 'undefined') {
+                    getDiscoverResults(data.id);
+                }
+            },
+            error: function (data) {
+
+            }
+        });
+    });
+    function getDiscoverResults(userId) {
+        client.send(new recombee.RecommendItemsToUser(userId, 10, {
+            'returnProperties': true,
+            'diversity': 0.5
+        }))
+            .then(function (res) {
+                console.log(res.recomms.length)
+                var html = "";
+                for (var i = 0; i < res.recomms.length; i++) {
+                    var id = res.recomms[i].id;
+                    var name = res.recomms[i].values.name;
+                    var tableRow = '<tr>';
+
+                    tableRow += `<td><img src="https://csc-2020-ca2.s3.us-east-1.amazonaws.com/${id}"/></td>`;
+                    tableRow += `<td><a href="/Home/Talent/${id}">${name}</a></td>`;
+
+                    tableRow += '<tr />'
+                    $('#table-body').append(tableRow);
+                }
+                $('#talents-table').show();
+            })
+            .catch(function (error) {
+                $('#talents-table').show();
+                $('#talents-table').html('An error occurred. Reload the page to try again.')
+            });
+    }
+</script>
+<style>
+    #talents-table {
+        display:none;
+    }
+</style>
+<h2>Discover</h2>
+<table class="table table-hover" id="talents-table">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody id="table-body">
+    </tbody>
+</table>

@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Home";
+}
+    <body>
+        <h1>The Lifetime Talents</h1>
+        <p>Share your smiling photos of your favourite talents here!</p>
+        <p>Create a free account to create talents, or subscribe to a daily plan to view and create comments on talents, as well as get personalised recommendations.</p>
+
+        @if (User.Identity.Name.Equals(""))
+        {
+            <section class="bg-gray">
+                <div class="text-center" id="buttons">
+                    <a href="/Home/Register" class="btn btn-outline-primary btn-xl">Sign up</a>
+                    <a href="/Home/Login" class="btn btn-outline-primary btn-xl">Login</a>
+                </div>
+            </section>
+        }
+    </body>
+
+<style>
+    header {
+        margin: 0;
+        padding: 0;
+    }
+
+    section {
+        margin: 0;
+        padding: 0;
+        height: 350px;
+    }
+
+    #banner {
+        padding: 0px;
+    }
+
+    #banner_text {
+        display: flex;
+        align-items: center;
+    }
+
+    #buttons {
+        padding: 50px;
+    }
+</style>

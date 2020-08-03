@@ -1,0 +1,157 @@
+﻿@using Microsoft.AspNet.Identity
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts/noty/jquery.noty.js")
+    @Scripts.Render("~/Scripts/noty/layouts/center.js")
+    @Scripts.Render("~/Scripts/noty/themes/default.js")
+
+
+</head>
+
+<body>
+
+    <div class="topnav">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item active">
+                        @Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("View all talents", "ViewAllTalents", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("Talent search", "SearchTalents", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                    </li>
+                    @if (User.IsInRole("PaidUser"))
+                    {
+                        <li class="nav-item">
+                            @Html.ActionLink("Discover", "Discover", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                        </li>
+                    }
+                    @if (!User.Identity.Name.Equals(""))
+                    {
+                        <li class="nav-item">
+                            @Html.ActionLink("Create talent", "CreateTalent", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                        </li>
+                        <li class="nav-item">
+                            @Html.ActionLink("My talents", "MyTalents", "MyAccount", new { area = "" }, new { @class = "navbar-brand" })
+                        </li>
+                        <li class="nav-item">
+                            @Html.ActionLink("My account", "ManageAccount", "MyAccount", new { area = "" }, new { @class = "navbar-brand" })
+                        </li>
+
+                    }
+
+                </ul>
+                <div class="form-inline my-2 my-lg-0">
+
+
+                    @if (User.Identity.Name.Equals(""))
+                    {
+                        @Html.ActionLink("Register", "Register", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                        @Html.ActionLink("Login", "Login", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                    }
+                    else
+                    {
+                        <button class="btn btn-dark" id="logout">Logout</button>
+                    }
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+            <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
+            <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
+        </ul>
+    </div>
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - The Lifetime Talents</p>
+        </footer>
+    </div>
+
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+@if (!User.Identity.Name.Equals(""))
+{
+    <script>
+        $(document).ready(function () {
+            $('#logout').click(function () {
+                $.ajax({
+                    url: '/api/Account/Logout',
+                    method: 'POST',
+                    success: function (response) {
+                        window.location.href = "/Home/Index";
+                    },
+                    error: function (jqXHR) {
+                        alert(jqXHR.responseText);
+                    }
+                });
+            });
+        });
+
+    </script>
+}
+
+<style>
+    /*button {
+        border: none;
+        background-color: inherit;
+        padding: 14px 28px;
+        text-align: center;
+        font-size: 16px;
+        cursor: pointer;
+        display: inline-block;
+        border-radius: 12px;
+    }
+
+    #logout{
+        color: #ffffff;
+        padding: 10px;
+    }
+
+        button:hover {
+        background: blue;
+    }*/
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-item {
+        color: #ffffff;
+    }
+
+    button {
+        border: none;
+        padding: 14px 28px;
+        background-color: inherit;
+        text-align: center;
+    }
+
+    #logout {
+        color: #ffffff;
+        padding: 10px;
+    }
+</style>

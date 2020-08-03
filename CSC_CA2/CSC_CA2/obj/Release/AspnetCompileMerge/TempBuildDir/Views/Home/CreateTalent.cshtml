@@ -1,0 +1,98 @@
+﻿@{
+    ViewBag.Title = "Create talent";
+}
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <h1>Create talent</h1>
+    <br />
+    <form id="formElem" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="image_file">Select an image</label>
+            <input type="file" name="image_file" class="form-control-file" accept=".jpg,.jpeg,.png">
+            <br />
+            <label for="talent-name">Name</label>
+            <input type="text" name="talent-name" class="form-control" />
+            <br />
+            <label for="talent-shortname">Short name</label>
+            <input type="text" name="talent-shortname" class="form-control" />
+            <br />
+            <label for="talent-reknown">Reknown for</label>
+            <input type="text" name="talent-reknown" class="form-control" />
+            <br />
+            <label for="talent-profile">Profile</label>
+            <textarea id="profile-text" name="profile_text" class="form-control" rows="15"></textarea>
+            <br />
+            <div id="loader"><img src="/ajax-loader.gif" /> Processing, please wait...</div>
+            <div id="error"></div>
+            <br />
+            @if (User.Identity.Name.Equals(""))
+            {
+                <input type="submit" disabled>
+            }
+            else
+            {
+                <input type="submit">
+            }
+        </div>
+    </form>
+    <br />
+    <style>
+        audio {
+            width: 80%;
+            display: block;
+            margin: 1em auto;
+        }
+    </style>
+
+    <script>
+        async function sendImage() {
+            var networkError = false;
+            $('#loader').show();
+            let res = await fetch('/api/Talents/Create', {
+                method: 'POST',
+                body: new FormData(formElem)
+            }).catch(error => {
+                $('#loader').hide();
+                networkError = true;
+                document.getElementById("div").innerHTML = "<img src=\"/ajax-loader.gif\"> Encountered an error, retrying...";
+                setTimeout(sendImage, 3000);
+            })
+            if (!networkError) {
+                if (res.status === 200) {
+                    $('#loader').hide();
+                    var respObj = await res.json();
+                    window.location.href = `/Home/Talent/${respObj.talentId}`;
+                } else {
+                    $('#loader').hide();
+                    var respObj = await res.json();
+                    document.getElementById("error").innerHTML = "<font color=\"red\">" + await respObj.message + "</font>";
+                }
+            }
+        }
+        formElem.onsubmit = async (e) => {
+            e.preventDefault();
+            sendImage();
+        };
+    </script>
+</body>
+</html>
+
+
+<style>
+    .b_middle {
+        width: 40%;
+        margin-left: 45%;
+    }
+
+    #save-button {
+        margin-left: 42%;
+        margin-top: 5%;
+    }
+    #loader {
+        display: none;
+    }
+</style>

@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewBag.Title = "Edit Talent";
+}
+
+<script>
+    var id;
+    $(document).ready(function () {
+        var url = window.location.href;
+
+        id = url.substring(url.lastIndexOf('/') + 1);
+
+        $.ajax({
+            url: `/api/Talents/ViewSingleTalent/${id}`,
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                $('#talent-name-display').text(data.shortName);
+                $('#talent-name').val(data.name);
+                $('#talent-shortname').val(data.shortName);
+                $('#talent-reknown').val(data.reknown);
+                $('#img-container').html(`<img src="${data.imageUrl}"/>`);
+                $('#profile-text').val(data.profile);
+                $('#title').show();
+            },
+            error: function (data) {
+                var n = noty({
+                    text: data.message, layout: 'center', type: 'error', timeout: 1750
+                })
+                n.show();
+            }
+        });
+    })
+
+    $(document).ready(function () {
+        var url = window.location.href;
+        id = url.substring(url.lastIndexOf('/') + 1);
+        $('#linkClose').click(function () {
+            $('#divError').hide('fade');
+        });
+        //element to use as save button should have id "save-button"
+        function updateTalent() {
+            $.ajax({
+                url: `/api/Talents/Edit/${id}`,
+                method: 'PUT',
+                data: {
+                    name: $('#talent-name').val(),
+                    shortName: $('#talent-shortname').val(),
+                    reknown: $('#talent-reknown').val(),
+                    profile: $('#profile-text').val()
+                },
+                success: function () {
+                    window.location.href = `/Home/Talent/${id}`;
+                },
+                error: function (jqXHR) {
+                    $('#divErrorText').html('');
+                    if (jqXHR.status === 400) {
+                        var respObj = JSON.parse(jqXHR.responseJSON.Message);
+                        console.log(respObj);
+                        var message = "The following error(s) occurred:<br />"
+                        for (var i = 0; i < respObj.length; i++) {
+                            if (typeof respObj[i][0] !== 'undefined') {
+                                message += respObj[i][0].ErrorMessage + '<br />';
+                            }
+                        }
+                        $('#divErrorText').append(message);
+
+                        $('#divError').show('fade');
+                    } else if (jqXHR.status === 403) {
+                        $('#divErrorText').append('Authorisation denied, you may need to sign in again');
+                        $('#divError').show('fade');
+                    }
+                    else if (jqXHR.status === 500) {
+                        $('#divErrorText').append('An internal server error occurred');
+                        $('#divError').show('fade');
+                    } else {
+                        $('#divErrorText').append('An error occurred');
+                        $('#divError').show('fade');
+                    }
+                }
+            });
+        }
+        formElem.onsubmit = async (e) => {
+            e.preventDefault();
+            updateTalent();
+        };
+    })
+
+    
+</script>
+<style> 
+    #title {
+        display: none;
+    }
+    #img-container {
+        margin: 1.25em;
+    }
+    
+</style>
+<h3 id="title">Editing "<span id="talent-name-display"></span>"</h3>
+<div id="img-container"></div>
+<form id="formElem" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="talent-name">Name</label>
+        <input type="text" name="talent-name" id="talent-name" class="form-control" />
+        <br />
+        <label for="talent-shortname">Short name</label>
+        <input type="text" name="talent-shortname" id="talent-shortname" class="form-control" />
+        <br />
+        <label for="talent-reknown">Reknown for</label>
+        <input type="text" name="talent-reknown" id="talent-reknown" class="form-control" />
+        <br />
+        <label for="talent-profile">Profile</label>
+        <textarea id="profile-text" name="profile_text" class="form-control" rows="15"></textarea>
+        <br />
+
+        <input type="submit">
+    </div>
+    <div id="divError" class="alert alert-danger collapse">
+        <a id="linkClose" class="close" href="#">&times;</a>
+        <div id="divErrorText"></div>
+    </div>
+</form>
+

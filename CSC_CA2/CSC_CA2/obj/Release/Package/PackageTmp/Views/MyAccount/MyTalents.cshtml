@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewBag.Title = "My Talents";
+}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+
+
+<script>
+    var tableBody, table, dataTableVar;
+    $(document).ready(function () {
+        tableBody = $('#table-body');
+        table = $('#talents-table');
+        loadData();
+    });
+    
+    function loadData() {
+        tableBody.html('');
+        $.ajax({
+            url: '/api/Talents/ViewMyTalents',
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                if (data.totalRecords === 0) {
+                    $('#loader').hide();
+                    table.html('No recordings found.');
+                    table.show();
+                } else {
+                    $('#loader').hide();
+                    for (var i = 0; i < data.length; i++) {
+
+                        var record = data[i];
+                        var tableRow = '<tr>';
+                        tableRow += `<td><img src="${record.imageUrl}"/></td>`;
+                        tableRow += `<td><a href="/Home/Talent/${record.id}">${record.name}</a></td>`;
+                        var actionButtons = ''
+                        actionButtons += `<button id =\"deleteButton\" class="btn btn-outline-danger" data-recordid=${record.id}><i class="fa fa-trash"></i></button>`;
+                        actionButtons += `<button id =\"editButton\" class="btn btn-outline-success"data-recordid=${record.id}><i class="fa fa-edit"></i></button>`
+
+                        tableRow += `<td>${actionButtons}</td>`;
+                        tableRow += '<tr />'
+                        tableBody.append(tableRow);
+                    }
+                    $("tr").each(function () {
+                        if (!$(this).text().trim()) {
+                            this.remove();
+                        }
+                    });
+                    dataTableVar = table.DataTable({ 'info' : false});
+                }
+            },
+            error: function (data) {
+                var n = noty({
+                    text: data.message, layout: 'center', type: 'error', timeout: 1750
+                })
+                n.show();
+                $('#loader').hide();
+            }
+        });
+    }
+    
+
+    //standard onclick doesn't work for elements dynamically created using JS
+    $(document).on('click', '#deleteButton', function () {
+        //get value of data attribute which contains account id
+        let id = $(this).attr('data-recordid')
+        let clickedButton = $(this);
+        $.ajax({
+            method: "DELETE",
+            url: `/api/Talents/Delete/${id}`,
+        }).done(function (data) {
+            dataTableVar.destroy();
+            var n = noty({
+                text: 'Talent deleted', layout: 'center', type: 'success', timeout: 1750
+            })
+            loadData();
+            n.show();
+            clickedButton.parent('td').parent('tr').remove();
+        }).fail(function (data) {
+            var n = noty({
+                text: data.message, layout: 'center', type: 'error', timeout: 1750
+            })
+            n.show();
+        });
+    });
+
+    $(document).on('click', '#editButton', function () {
+        let id = $(this).attr('data-recordid');
+        window.location.href = `/Home/EditTalent/${id}`; //bring user to edit transcription page
+    });
+</script>
+<style>
+    button {
+        margin: 0.5em;
+    }
+</style>
+<h2>My talents</h2>
+
+<table class="table table-hover" id="talents-table">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="table-body">
+    </tbody>
+</table>
+
+

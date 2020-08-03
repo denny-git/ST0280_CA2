@@ -1,0 +1,144 @@
+﻿@using Microsoft.AspNet.Identity;
+@{ 
+    ViewBag.Title = "Viewing talent"; 
+}
+@if (User.IsInRole("PaidUser"))
+{
+<script src="https://cdn.jsdelivr.net/gh/recombee/js-api-client@3.0.0/dist/recombee-api-client.min.js"></script>
+                <script>
+                    var client = new recombee.ApiClient('thelifetimetalents-prod', 'z1efN6EKoTBYWMHjoXFXG91HP4OUImatubWjt4xubhG0ZhfSCvazxkgGLUoIjVhb');
+                    $(document).ready(function () {
+                        var userId;
+
+                        var url = window.location.href;
+                        talentId = url.substring(url.lastIndexOf('/') + 1);
+
+                        $.ajax({
+                            url: `/api/Account/AccountId`,
+                            method: 'GET',
+                            dataType: 'json',
+                            success: function (data) {
+                                if (typeof data.id !== 'undefined') {
+                                    setTimeout(function () {
+                                        client.send(new recombee.AddDetailView(data.id, talentId, {
+                                            cascadeCreate: true
+                                        }));
+                                    }, 4000);
+
+                                    getRecommendation(talentId, data.id);
+
+                                }
+                            },
+                            error: function (data) {
+                                var n = noty({
+                                    text: "An error occurred, the talent may not exist.", layout: 'center', type: 'error', timeout: 1750
+                                })
+                                n.show();
+                            }
+                        });
+
+                    });
+                    function getRecommendation(talentId, userId) {
+                        client.send(new recombee.RecommendItemsToItem(talentId, userId, 5, {
+                            returnProperties: true,
+                        }))
+                            .then(function (res) {
+                                console.log(res.recomms.length)
+                                var html = "<ul>";
+                                for (var i = 0; i < res.recomms.length; i++) {
+                                    var id = res.recomms[i].id;
+                                    console.log(id);
+                                    var name = res.recomms[i].values.name;
+                                    html = `<li><a href = "/Home/Talent/${id}">${name}</a></li>`;
+                                    $('#recommendations').append(html + '<ul/>');
+
+                                }
+                                console.log(html);
+
+                            })
+                            .catch(function (error) {
+                                html = `<p>Oops, we encountered an error while trying to your recommendations</p>`;
+                                $('#recommendations').append(html);
+                            });
+                    }
+
+                </script>}
+<script>
+    $(document).ready(function () {
+        var url = window.location.href;
+
+        id = url.substring(url.lastIndexOf('/') + 1);
+
+        $.ajax({
+            url: `https://n1szzaxsvf.execute-api.us-east-1.amazonaws.com/prod/gettalent/${id}`,
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                $('#talent-name').text(data.shortName);
+                $('#talent-fullName').text(data.name);
+                $('#talent-reknown').text(data.reknown);
+                $('#img-container').html(`<img src="${data.imageUrl}"/>`);
+                $('#talent-profile').text(data.profile);
+            },
+            error: function (data) {
+                var n = noty({
+                    text: data.message, layout: 'center', type: 'error', timeout: 1750
+                })
+                n.show();
+            }
+        });
+    })
+
+</script>
+<style>
+    #img-container {
+        text-align: center;
+        padding: 1.25em;
+    }
+</style>
+<h1 id="talent-name"></h1>
+<div id="img-container"></div>
+<h4>Full name: <span id="talent-fullName"></span></h4>
+<h4>Reknown for: <span id="talent-reknown"></span></h4>
+<p id="talent-profile"></p>
+<br />
+
+<h5>More like this</h5>
+@if (User.IsInRole("PaidUser"))
+{
+    <div id="recommendations"></div> 
+}
+else
+{
+    <p>Subscribe to get personalised recommendations.</p>
+}
+
+
+<h5>Discussion</h5>
+@if (User.IsInRole("PaidUser"))
+{
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function () {
+            this.page.url = window.location.href;
+            this.page.identifier = url.substring(url.lastIndexOf('/') + 1);
+        };
+
+        (function () {
+            var d = document, s = d.createElement('script');
+            s.src = 'https://cscca2-2.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>
+        Please enable JavaScript to view the
+        <a href="https://disqus.com/?ref_noscript" rel="nofollow">
+            comments powered by Disqus.
+        </a>
+    </noscript> 
+}
+else
+{
+    <p>Subscribe to one of our plans to view and create comments on talent photos.</p>
+}

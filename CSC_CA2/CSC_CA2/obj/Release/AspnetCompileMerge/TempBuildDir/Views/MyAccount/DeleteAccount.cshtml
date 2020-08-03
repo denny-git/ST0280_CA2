@@ -1,0 +1,111 @@
+﻿
+@{
+    ViewBag.Title = "Delete Account";
+}
+<style>
+    input[type=text], input[type=email] {
+        width: 100%;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+    }
+
+        input[type=text]:focus, input[type=password]:focus {
+            background-color: #ddd;
+            outline: none;
+        }
+
+    .registerbtn {
+        color: white;
+        padding: 16px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        opacity: 0.9;
+    }
+
+        .registerbtn:disabled {
+            opacity: 0.5;
+        }
+</style>
+<script>
+    $(document).ready(function () {
+
+        $('#txtDelete').on('change paste keyup', function () {
+            if ($('#txtDelete').val() === 'Delete') {
+                $('#btnDelete').prop('disabled', false);
+            } else {
+                $('#btnDelete').prop('disabled', true);
+            }
+        })
+
+        $('#btnDelete').click(function () {
+            $.ajax({
+                url: '/api/Account/Delete',
+                method: 'DELETE',
+
+                success: function () {
+                    $('#successModal').modal('show');
+                    setTimeout(function () {
+                        window.location.href = '/Home/Index'
+                    }, 3000)
+                },
+                error: function (jqXHR) {
+                    if (jqXHR.status === 404) {
+                        $('#divErrorText').text('The user specified to delete is invalid');
+                        $('#divError').show('fade');
+
+                    } else {
+                        $('#divErrorText').text(jqXHR.responseText);
+                        $('#divError').show('fade');
+                    }
+                }
+            });
+        })
+    })
+
+
+</script>
+<div class="alert alert-danger">
+    <div>The following information is very important. Read it carefully before making a decision.</div>
+</div>
+<div class="modal fade" tabindex="1" id="successModal"
+     data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="model-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4></h4>
+            </div>
+            <div class="modal-body">
+                <h2>Account deleted successfully</h2>
+                <p>You will be redirected to the main page shortly. If that does not happen, <a href="/Home/Index">click here</a>.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-success">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4>I acknowledge that:</h4>
+<ul>
+    <li>The action of deleting my account is permanent and irreversible, and I will not be able to reactivate or log back into it again.</li>
+</ul>
+<div class="col-md-10 col-md-offset-1">
+    <div class="container-login100">
+        <div class="loginForm validate-form flex-sb flex-w">
+            <label for="email"><b>Type "Delete" below to confirm that you really want to delete your account.</b></label>
+            <br />
+            <input type="email" placeholder="Delete" name="delete" id="txtDelete" required>
+        </div>
+        <input type="submit" class="btn-danger registerbtn" id="btnDelete" value="Delete my account" disabled>
+    </div>
+    <div id="divError" class="alert alert-danger collapse">
+        <a id="linkClose" class="close" href="#">&times;</a>
+        <div id="divErrorText"></div>
+    </div>
+</div>

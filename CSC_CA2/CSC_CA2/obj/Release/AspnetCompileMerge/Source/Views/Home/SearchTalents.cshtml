@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewBag.Title = "Search talents";
+}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<script>
+    $(document).ready(function () {
+        $('#search-btn').click(function () {
+            var searchTerm = $('#search-box').val();
+            console.log(searchTerm.trim().length)
+            if (searchTerm.trim().length !== 0) {
+                search(searchTerm);
+            } else {
+                $('#table-body').html('<tr><td>Search term cannot be empty</td><tr />');
+            }
+        });
+    });
+
+    function search(searchTerm) {
+        var tableBody = $('#table-body');
+        tableBody.html('');
+        var table = $('#talents-table');
+        $.ajax({
+            url: `https://n1szzaxsvf.execute-api.us-east-1.amazonaws.com/prod/searchtalent/${searchTerm}`,
+            crossDomain: true,
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                if (data.length == 0) {
+                    $('#loader').hide();
+                    tableBody.html('<tr><td>No results.</td><tr />');
+                    console.log('No results');
+                    table.show();
+                } else {
+                    $('#loader').hide();
+                    for (var i = 0; i < data.length; i++) {
+
+                        var record = data[i];
+                        var tableRow = '<tr>';
+                        tableRow += `<td><img src="${record.imageUrl}"/></td>`;
+                        tableRow += `<td><a href="/Home/Talent/${record.id}">${record.name}</a></td>`;
+
+                        tableRow += '<tr />'
+                        tableBody.append(tableRow);
+                    }
+                }
+            },
+            error: function (data) {
+                var n = noty({
+                    text: data.message, layout: 'center', type: 'error', timeout: 1750
+                })
+                n.show();
+                $('#loader').hide();
+            }
+        });
+    }
+
+</script>
+<style>
+    td, th {
+        padding: 1em;
+    }
+
+    #recordings-table {
+        display: none;
+    }
+
+    #loader {
+        display: none;
+    }
+
+    #text-container {
+        max-height: 18em;
+        overflow: auto;
+    }
+</style>
+<h1>Search talent</h1>
+<div class="input-group mb-3">
+    <input type="text" id="search-box" class="form-control" placeholder="Talent name" aria-label="Search" aria-describedby="basic-addon2">
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button" id="search-btn">Search</button>
+    </div>
+</div>
+<div id="loader">Loading..</div>
+<table class="table table-hover" id="talents-table">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody id="table-body">
+    </tbody>
+</table>
+
+

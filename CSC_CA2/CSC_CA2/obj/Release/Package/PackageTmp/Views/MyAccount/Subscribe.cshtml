@@ -1,0 +1,139 @@
+﻿
+@{
+    ViewData["Title"] = "Subscribe";
+}
+
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '/api/Account/AccountStatus',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    $('#curr-plan').html(data.plan);
+                    $('#last-paid').html(data.lastPaid);
+                    $('#plan-status').html(data.status);
+                },
+                error: function (result) {
+                    $('#status').html('<img src="/ajax-loader.gif" /> Failed to load plans, retrying...');
+                }
+            });
+        });
+        
+    </script>
+
+@if(!User.IsInRole("PaidUser")) {
+    <script>
+        function loadPlans() {
+            var tableBody = $('#plans');
+            $.ajax({
+                url: '/api/subscriptions/plans',
+                dataType: 'json',
+                success: function (data) {
+                    $('#status').hide();
+                    $('#plans-table').show();
+                    for (var i = 0; i < data.length; i++) {
+                        var tableRow = '<tr>';
+                        tableRow += '<td>' + data[i].name + '</td>';
+                        tableRow += '<td>' + data[i].description + '</td>';
+                        tableRow += '<td>$' + data[i].price / 100 + '</td>';
+                        tableRow += '<td><button onclick=\"subscribe(\'' + data[i].priceId + '\', \'' + data[i].name + '\')\" class=\"btn-success\">Subscribe</button>' + '</td>';
+                        tableRow += '<tr />'
+                        tableBody.append(tableRow);
+                    }
+                },
+                error: function (result) {
+                    $('#status').html('<img src="/ajax-loader.gif" /> Failed to load plans, retrying...');
+                    setTimeout(loadPlans, 3000);
+                }
+            });
+        }
+        function subscribeRequest(priceId) {
+            $.ajax({
+                url: '/api/subscriptions/subscribe',
+                type: 'post',
+                data: { priceId: priceId },
+                success: function (data) {
+                    $('#subscription-request-status').html(data.message + ' View your invoice <a href=\"' + data.url + '\" target=\"_blank\">here</a>. Log out and in again for changes to take effect.');
+                },
+                error: function (xhr, err, data) {
+                    if (xhr.status == 0) {
+                        $('#subscription-request-status').html('<img src="/ajax-loader.gif" /> Could not reach server. Trying again...');
+                        setTimeout(function () {
+                            subscribeRequest(priceId);
+                        }, 3000);
+                    } else {
+                        $('#subscription-request-status').html(xhr.responseJSON.message);
+                    }
+                }
+            });
+        }
+        function subscribe(priceId, planName) {
+            $('#subscription-process-info').show();
+            $('#plan-header').text('Subscribing to ' + planName);
+            $('#subscription-request-status').html('<img src="/ajax-loader.gif" /> Subscription in progress...');
+            subscribeRequest(priceId);
+        }
+        $('document').ready(function () {
+            $('#status').html('<img src="/ajax-loader.gif" /> Loading plans...');
+            loadPlans();
+        });
+    </script>
+}
+
+
+<style>
+    td, th {
+        padding: 1em;
+    }
+
+    #plans-table {
+        display: none;
+    }
+
+    tr, th, tbody, td, #plans-table {
+        border: 1px solid;
+    }
+
+    #subscription-process-info {
+        display: none;
+    }
+</style>
+<h1>Subscribe to a plan</h1>
+
+
+<h4>Subscription</h4>
+<p>Current plan: <span id="curr-plan"></span></p>
+<p>Last paid: <span id="last-paid"></span></p>
+<p>Subscription status: <span id="plan-status"></span></p>
+
+<p>To manage your subscription, go to My Account > Manage Billing</p>
+
+@if(!User.IsInRole("PaidUser"))
+{
+    <p>You will be charged immediately upon subscribing to a plan, and daily thereafter. Any changes to your subscription (creating/cancelling a subscription) may take a while to be reflected on this site. Remember to ensure that you have set up a payment method in My Account > Manage Billing before subscribing, if you have not done so yet.</p>
+    <p></p>
+    <br />
+    <div id="status"></div>
+    <div>
+        <table id="plans-table">
+            <thead>
+                <tr>
+                    <th>Plan name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="plans">
+            </tbody>
+        </table>
+    </div>
+    <br />
+    <div id="subscription-process-info">
+        <h2 id="plan-header"></h2>
+        <div id="subscription-request-status"></div>
+    </div>
+}
+
+
